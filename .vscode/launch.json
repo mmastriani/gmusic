@@ -14,10 +14,7 @@
                     "--bin=gmusic"
                 ]
             },
-            "args": [],
-            "env": {
-                "GDK_BACKEND": "x11"
-            }
+            "args": []
         },
         {
             "name": "Debug unit tests in executable 'gmusic'",
@@ -28,9 +25,6 @@
                     "test",
                     "--bin=gmusic"
                 ]
-            },
-            "env": {
-                "GDK_BACKEND": "x11"
             }
         }
     ]
