@@ -67,6 +67,25 @@ fn setup_css() {
             color: inherit;
         }
 
+        .version-pill {
+            background-color: #e0eaf5;
+            color: #1c71d8;
+            border-radius: 9999px;
+            padding: 4px 14px;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .about-title {
+            font-weight: 800;
+            font-size: 24pt;
+        }
+
+        .about-subtitle {
+            font-size: 12pt;
+            color: #555555;
+        }
+
         .title-4 {
             font-weight: bold;
             font-size: 12pt;
@@ -77,7 +96,7 @@ fn setup_css() {
         }
 
         .navigation-sidebar {
-            background-color: #f0f0f2;
+            background-color: #ededed;
         }
 
         paned > separator {
@@ -606,16 +625,127 @@ fn show_preferences(app: &Application) {
 fn show_about(app: &Application) {
     let window = app.active_window().expect("No window found for About");
 
-    let about = gtk::AboutDialog::builder()
+    let about_win = gtk::Window::builder()
         .transient_for(&window)
         .modal(true)
-        .program_name("gmusic")
-        .version("0.1.0")
-        .comments("A simple music player in GTK4 style.")
-        .logo_icon_name("audio-x-generic")
+        .title("")
+        .default_width(360)
+        .resizable(false)
+        .hide_on_close(true)
         .build();
-    about.present();
-    gtk::prelude::GtkWindowExt::set_focus(&about, None::<&gtk::Widget>);
+
+    let header_bar = gtk::HeaderBar::new();
+    header_bar.set_show_title_buttons(true);
+    about_win.set_titlebar(Some(&header_bar));
+
+    let main_box = gtk::Box::new(gtk::Orientation::Vertical, 0);
+    main_box.set_margin_top(24);
+    main_box.set_margin_bottom(32);
+    main_box.set_margin_start(32);
+    main_box.set_margin_end(32);
+    main_box.set_halign(gtk::Align::Fill);
+
+    let icon = gtk::Image::from_icon_name("gmusic");
+    icon.set_pixel_size(128);
+    icon.set_margin_bottom(24);
+
+    let title_label = gtk::Label::new(Some("gMusic"));
+    title_label.add_css_class("about-title");
+    title_label.set_margin_bottom(8);
+
+    let subtitle_label = gtk::Label::new(Some("The GNOME Project"));
+    subtitle_label.add_css_class("about-subtitle");
+    subtitle_label.set_margin_bottom(12);
+
+    let version_box = gtk::Box::new(gtk::Orientation::Horizontal, 0);
+    version_box.set_halign(gtk::Align::Center);
+    let version_label = gtk::Label::new(Some("0.1.0"));
+    version_label.add_css_class("version-pill");
+    version_box.append(&version_label);
+    version_box.set_margin_bottom(32);
+
+    let links_list = gtk::ListBox::new();
+    links_list.add_css_class("boxed-list");
+    links_list.set_selection_mode(gtk::SelectionMode::None);
+    
+    let website_row = gtk::ListBoxRow::new();
+    let web_box = gtk::Box::new(gtk::Orientation::Horizontal, 0);
+    web_box.set_margin_top(14);
+    web_box.set_margin_bottom(14);
+    web_box.set_margin_start(14);
+    web_box.set_margin_end(14);
+    let web_lbl = gtk::Label::new(Some("Website"));
+    web_lbl.set_hexpand(true);
+    web_lbl.set_halign(gtk::Align::Start);
+    let web_icon = gtk::Image::from_icon_name("external-link-symbolic");
+    web_box.append(&web_lbl);
+    web_box.append(&web_icon);
+    website_row.set_child(Some(&web_box));
+    links_list.append(&website_row);
+
+    let issue_row = gtk::ListBoxRow::new();
+    let issue_box = gtk::Box::new(gtk::Orientation::Horizontal, 0);
+    issue_box.set_margin_top(14);
+    issue_box.set_margin_bottom(14);
+    issue_box.set_margin_start(14);
+    issue_box.set_margin_end(14);
+    let issue_lbl = gtk::Label::new(Some("Report an Issue"));
+    issue_lbl.set_hexpand(true);
+    issue_lbl.set_halign(gtk::Align::Start);
+    let issue_icon = gtk::Image::from_icon_name("external-link-symbolic");
+    issue_box.append(&issue_lbl);
+    issue_box.append(&issue_icon);
+    issue_row.set_child(Some(&issue_box));
+    links_list.append(&issue_row);
+
+    let info_list = gtk::ListBox::new();
+    info_list.add_css_class("boxed-list");
+    info_list.set_selection_mode(gtk::SelectionMode::None);
+    info_list.set_margin_top(16);
+
+    let credits_row = gtk::ListBoxRow::new();
+    let cred_box = gtk::Box::new(gtk::Orientation::Horizontal, 0);
+    cred_box.set_margin_top(14);
+    cred_box.set_margin_bottom(14);
+    cred_box.set_margin_start(14);
+    cred_box.set_margin_end(14);
+    let cred_lbl = gtk::Label::new(Some("Credits"));
+    cred_lbl.set_hexpand(true);
+    cred_lbl.set_halign(gtk::Align::Start);
+    let cred_icon = gtk::Image::from_icon_name("go-next-symbolic");
+    cred_box.append(&cred_lbl);
+    cred_box.append(&cred_icon);
+    credits_row.set_child(Some(&cred_box));
+    info_list.append(&credits_row);
+
+    let legal_row = gtk::ListBoxRow::new();
+    let legal_box = gtk::Box::new(gtk::Orientation::Horizontal, 0);
+    legal_box.set_margin_top(14);
+    legal_box.set_margin_bottom(14);
+    legal_box.set_margin_start(14);
+    legal_box.set_margin_end(14);
+    let legal_lbl = gtk::Label::new(Some("Legal"));
+    legal_lbl.set_hexpand(true);
+    legal_lbl.set_halign(gtk::Align::Start);
+    let legal_icon = gtk::Image::from_icon_name("go-next-symbolic");
+    legal_box.append(&legal_lbl);
+    legal_box.append(&legal_icon);
+    legal_row.set_child(Some(&legal_box));
+    info_list.append(&legal_row);
+
+    let center_box = gtk::Box::new(gtk::Orientation::Vertical, 0);
+    center_box.set_halign(gtk::Align::Center);
+    center_box.append(&icon);
+    center_box.append(&title_label);
+    center_box.append(&subtitle_label);
+    center_box.append(&version_box);
+
+    main_box.append(&center_box);
+    main_box.append(&links_list);
+    main_box.append(&info_list);
+
+    about_win.set_child(Some(&main_box));
+    about_win.present();
 }
 
 fn create_sidebar_tree_view(
@@ -1196,6 +1326,7 @@ fn build_main_panel(
 }
 
 fn build_ui(app: &Application) {
+    gtk::Window::set_default_icon_name("gmusic");
     let config = Rc::new(RefCell::new(AppConfig::load()));
     let player_state: SharedPlayerState = Rc::new(RefCell::new(PlayerState::default_with_vol()));
 

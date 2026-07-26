@@ -1,0 +1,29 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="edgeGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#55ff00" />
+      <stop offset="100%" stop-color="#0055ff" />
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="15" stdDeviation="15" flood-color="#000000" flood-opacity="0.2"/>
+    </filter>
+  </defs>
+
+  <!-- 3D Edge (Back layer shifted down and right) -->
+  <path d="M 120 90 L 420 266 L 120 442 Z" fill="url(#edgeGrad)" filter="url(#shadow)" stroke="url(#edgeGrad)" stroke-width="60" stroke-linejoin="round"/>
+  
+  <!-- Front Face -->
+  <path d="M 110 70 L 410 246 L 110 422 Z" fill="#ffffff" stroke="#ffffff" stroke-width="60" stroke-linejoin="round"/>
+
+  <!-- Soundwave Bars -->
+  <!-- Center is around X=180, Y=246 -->
+  <!-- We want 5 bars -->
+  <!-- Left to right gradients can just use the same edgeGrad -->
+  <g fill="url(#edgeGrad)">
+    <rect x="150" y="216" width="16" height="60" rx="8" />
+    <rect x="180" y="186" width="16" height="120" rx="8" />
+    <rect x="210" y="146" width="16" height="200" rx="8" />
+    <rect x="240" y="186" width="16" height="120" rx="8" />
+    <rect x="270" y="216" width="16" height="60" rx="8" />
+  </g>
+</svg>
