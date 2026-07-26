@@ -192,13 +192,13 @@ pub fn get_basic_song_info(path: &Path) -> Song {
     let default_title = path
         .file_stem()
         .and_then(|s| s.to_str())
-        .unwrap_or("Música sem nome")
+        .unwrap_or("Unknown Song")
         .to_string();
 
     Song {
         title: default_title,
-        artist: "Carregando...".to_string(),
-        album: "Carregando...".to_string(),
+        artist: "Loading...".to_string(),
+        album: "Loading...".to_string(),
         duration_secs: 0,
         path: path.to_path_buf(),
     }
@@ -208,12 +208,12 @@ pub fn extract_song_metadata(path: &Path) -> Song {
     let default_title = path
         .file_stem()
         .and_then(|s| s.to_str())
-        .unwrap_or("Música sem nome")
+        .unwrap_or("Unknown Song")
         .to_string();
 
     let mut title = default_title;
-    let mut artist = "Artista desconhecido".to_string();
-    let mut album = "Álbum desconhecido".to_string();
+    let mut artist = "Unknown Artist".to_string();
+    let mut album = "Unknown Album".to_string();
     let mut duration_secs = 0u64;
 
     if let Ok(mut file) = std::fs::File::open(path) {
@@ -376,7 +376,7 @@ pub fn build_root_folder_store(config: &AppConfig) -> gio::ListStore {
             let folder_name = dir
                 .file_name()
                 .and_then(|n| n.to_str())
-                .unwrap_or_else(|| dir.to_str().unwrap_or("Música"));
+                .unwrap_or_else(|| dir.to_str().unwrap_or("Music"));
             let folder_item = build_folder_item(folder_name, dir.clone());
             root_store.append(&folder_item);
         }

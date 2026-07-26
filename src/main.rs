@@ -29,16 +29,61 @@ fn setup_css() {
             font-family: cantarell, "Segoe UI", sans-serif;
         }
 
-        headerbar {
+        window, window.background {
+            border-radius: 12px;
             background-color: #fafafa;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+        }
+
+        headerbar, .titlebar {
+            background-color: #fafafa;
+            background-image: none;
+            border: none;
             box-shadow: none;
             padding: 4px 8px;
         }
 
+        headerbar windowcontrols button, .titlebar windowcontrols button, .titlebutton {
+            background-color: rgba(0, 0, 0, 0.08);
+            background-image: none;
+            border-radius: 9999px;
+            min-width: 20px;
+            min-height: 20px;
+            padding: 0;
+            margin: 12px 4px;
+            border: none;
+        }
+
+        headerbar windowcontrols button:hover, .titlebar windowcontrols button:hover, .titlebutton:hover {
+            background-color: rgba(0, 0, 0, 0.15);
+        }
+        
+        .pref-title, window.aboutdialog headerbar .title {
+            font-weight: bold;
+            font-size: 12pt;
+        }
+
+        window.aboutdialog label selection {
+            background-color: transparent;
+            color: inherit;
+        }
+
+        .title-4 {
+            font-weight: bold;
+            font-size: 12pt;
+        }
+
+        .main-headerbar {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+        }
+
         .navigation-sidebar {
             background-color: #f0f0f2;
-            border-right: 1px solid rgba(0, 0, 0, 0.08);
+        }
+
+        paned > separator {
+            background-image: none;
+            background-color: rgba(0, 0, 0, 0.08);
+            min-width: 1px;
         }
 
         .navigation-sidebar row {
@@ -175,11 +220,11 @@ fn setup_css() {
 
         .lcd-display {
             background-color: #ededed;
-            border: 1px solid #dcdcdc;
+            border: 1px solid rgba(0, 0, 0, 0.08);
             border-radius: 6px;
             min-width: 550px;
             padding: 4px 12px;
-            box-shadow: inset 0 1px 3px rgba(0,0,0,0.06);
+            box-shadow: none;
         }
 
         .lcd-title {
@@ -216,14 +261,21 @@ fn setup_css() {
         }
 
         .lcd-scale trough {
-            min-height: 2px;
-            border-radius: 2px;
+            min-height: 3px;
+            border: none;
+            background-color: rgba(0, 0, 0, 0.15);
+            border-radius: 3px;
+        }
+
+        .lcd-scale highlight {
+            min-height: 3px;
+            border-radius: 3px;
         }
 
         .media-btn {
-            min-width: 40px;
-            min-height: 40px;
-            border-radius: 10%;
+            min-width: 50px;
+            min-height: 50px;
+            border-radius: 50%;
             background-color: transparent;
             background-image: none;
             border: none;
@@ -312,8 +364,8 @@ fn choose_folder<F: Fn(PathBuf) + 'static>(parent: &gtk::Window, title: &str, on
         Some(title),
         Some(parent),
         gtk::FileChooserAction::SelectFolder,
-        Some("Selecionar"),
-        Some("Cancelar"),
+        Some("Select"),
+        Some("Cancel"),
     );
 
     chooser.connect_response(move |dialog, response| {
@@ -333,19 +385,19 @@ fn choose_folder<F: Fn(PathBuf) + 'static>(parent: &gtk::Window, title: &str, on
 fn show_preferences(app: &Application) {
     let window = app
         .active_window()
-        .expect("Sem janela ativa para Preferences");
+        .expect("No active window for Preferences");
 
     let header_bar = HeaderBar::new();
     let title_label = Label::builder()
-        .label("Preferências")
-        .css_classes(vec!["title"])
+        .label("Preferences")
+        .css_classes(vec!["title", "pref-title"])
         .build();
     header_bar.set_title_widget(Some(&title_label));
 
     let prefs_window = gtk::Window::builder()
         .transient_for(&window)
         .modal(true)
-        .title("Preferências")
+        .title("Preferences")
         .default_width(540)
         .default_height(420)
         .build();
@@ -361,13 +413,13 @@ fn show_preferences(app: &Application) {
     main_box.set_margin_bottom(20);
 
     let section_title = Label::builder()
-        .label("Diretórios de Música")
+        .label("Music Directories")
         .halign(gtk::Align::Start)
-        .css_classes(vec!["title-3"])
+        .css_classes(vec!["title-4"])
         .build();
 
     let section_desc = Label::builder()
-        .label("Selecione os diretórios onde o aplicativo procurará por músicas (mínimo 1).")
+        .label("Select the directories where the application will look for music (minimum 1).")
         .halign(gtk::Align::Start)
         .css_classes(vec!["dim-label"])
         .wrap(true)
@@ -391,13 +443,13 @@ fn show_preferences(app: &Application) {
         .build();
 
     let add_btn = Button::builder()
-        .label("Adicionar Diretório")
+        .label("Add Directory")
         .icon_name("list-add-symbolic")
         .css_classes(vec!["suggested-action"])
         .build();
 
     let reset_btn = Button::builder()
-        .label("Restaurar Padrão")
+        .label("Reset")
         .icon_name("edit-clear-all-symbolic")
         .build();
 
@@ -448,7 +500,7 @@ fn show_preferences(app: &Application) {
 
             let edit_btn = Button::builder()
                 .icon_name("document-edit-symbolic")
-                .tooltip_text("Alterar este diretório")
+                .tooltip_text("Change this directory")
                 .css_classes(vec!["flat"])
                 .build();
 
@@ -463,7 +515,7 @@ fn show_preferences(app: &Application) {
                 let list_box_c = list_box_edit.clone();
                 let on_change_c = on_change_edit.clone();
 
-                choose_folder(&win_edit, "Alterar Diretório de Música", move |new_path| {
+                choose_folder(&win_edit, "Change Music Directory", move |new_path| {
                     let mut cfg = config_c.borrow_mut();
                     if index < cfg.music_directories.len() {
                         cfg.music_directories[index] = new_path;
@@ -477,7 +529,7 @@ fn show_preferences(app: &Application) {
 
             let remove_btn = Button::builder()
                 .icon_name("user-trash-symbolic")
-                .tooltip_text("Remover este diretório")
+                .tooltip_text("Remove this directory")
                 .css_classes(vec!["flat", "destructive-action"])
                 .sensitive(total_dirs > 1)
                 .build();
@@ -522,20 +574,16 @@ fn show_preferences(app: &Application) {
         let list_box_c = list_box_add.clone();
         let notify_c = notify_cb_add.clone();
 
-        choose_folder(
-            &win_add,
-            "Adicionar Diretório de Música",
-            move |new_path| {
-                let mut cfg = config_c.borrow_mut();
-                if !cfg.music_directories.contains(&new_path) {
-                    cfg.music_directories.push(new_path);
-                    let _ = cfg.save();
-                }
-                drop(cfg);
-                notify_c();
-                render_list(&list_box_c, &config_c, &win_c, &notify_c);
-            },
-        );
+        choose_folder(&win_add, "Add Music Directory", move |new_path| {
+            let mut cfg = config_c.borrow_mut();
+            if !cfg.music_directories.contains(&new_path) {
+                cfg.music_directories.push(new_path);
+                let _ = cfg.save();
+            }
+            drop(cfg);
+            notify_c();
+            render_list(&list_box_c, &config_c, &win_c, &notify_c);
+        });
     });
 
     let config_reset = config.clone();
@@ -556,18 +604,18 @@ fn show_preferences(app: &Application) {
 }
 
 fn show_about(app: &Application) {
-    let window = app.active_window().expect("Sem janela ativa para About");
+    let window = app.active_window().expect("No window found for About");
 
     let about = gtk::AboutDialog::builder()
         .transient_for(&window)
         .modal(true)
         .program_name("gmusic")
         .version("0.1.0")
-        .comments("Um player de música em GTK4 no estilo GNOME Music.")
+        .comments("A simple music player in GTK4 style.")
         .logo_icon_name("audio-x-generic")
         .build();
-
     about.present();
+    gtk::prelude::GtkWindowExt::set_focus(&about, None::<&gtk::Widget>);
 }
 
 fn create_sidebar_tree_view(
@@ -858,13 +906,13 @@ fn build_main_panel(
     let header_box = GtkBox::new(Orientation::Vertical, 4);
 
     let folder_title_label = Label::builder()
-        .label("Músicas")
+        .label("Songs")
         .halign(gtk::Align::Start)
         .css_classes(vec!["folder-title"])
         .build();
 
     let folder_subtitle_label = Label::builder()
-        .label("0 Músicas")
+        .label("0 Music")
         .halign(gtk::Align::Start)
         .css_classes(vec!["folder-subtitle"])
         .build();
@@ -874,7 +922,7 @@ fn build_main_panel(
 
     let more_btn = Button::builder()
         .icon_name("view-more-symbolic")
-        .tooltip_text("Opções")
+        .tooltip_text("Options")
         .css_classes(vec!["action-circle-btn"])
         .build();
 
@@ -948,7 +996,7 @@ fn build_main_panel(
             let more_btn = Button::builder()
                 .icon_name("view-more-symbolic")
                 .css_classes(vec!["flat"])
-                .tooltip_text("Opções")
+                .tooltip_text("Options")
                 .build();
 
             title_sg.add_widget(&title_lbl);
@@ -1039,7 +1087,7 @@ fn build_main_panel(
         if let Some(row_box) = list_item.child().and_downcast::<GtkBox>() {
             if let Some(item_obj) = list_item.item() {
                 if let Some(song_item) = item_obj.downcast_ref::<SongItem>() {
-                    if song_item.artist() == "Carregando..." {
+                    if song_item.artist() == "Loading..." {
                         println!("Requesting index {}", song_item.index());
                         let _ = req_tx_bind.send(MetadataRequest {
                             folder_version: CURRENT_FOLDER_VERSION.load(Ordering::SeqCst),
@@ -1129,7 +1177,7 @@ fn build_main_panel(
         let _folder_version = CURRENT_FOLDER_VERSION.fetch_add(1, Ordering::SeqCst) + 1;
 
         let songs = scan_songs_recursive(&path);
-        subtitle_lbl_clone.set_text(&format!("{} Músicas", songs.len()));
+        subtitle_lbl_clone.set_text(&format!("{} Music", songs.len()));
 
         player_state_update.borrow_mut().playlist = songs.clone();
 
@@ -1304,8 +1352,8 @@ fn build_ui(app: &Application) {
     });
 
     let menu = gio::Menu::new();
-    menu.append(Some("Preferências"), Some("app.preferences"));
-    menu.append(Some("Sobre"), Some("app.about"));
+    menu.append(Some("Preferences"), Some("app.preferences"));
+    menu.append(Some("About"), Some("app.about"));
 
     let popover = gtk::PopoverMenu::from_model(Some(&menu));
     let menu_button = gtk::MenuButton::builder()
@@ -1316,6 +1364,7 @@ fn build_ui(app: &Application) {
         .build();
 
     let header_bar = HeaderBar::new();
+    header_bar.add_css_class("main-headerbar");
     header_bar.pack_start(&left_box);
     header_bar.pack_end(&menu_button);
     header_bar.set_title_widget(Some(&center_box));
@@ -1327,7 +1376,7 @@ fn build_ui(app: &Application) {
     sidebar.add_css_class("navigation-sidebar");
 
     let sidebar_header = Label::builder()
-        .label("Pastas")
+        .label("Library")
         .halign(gtk::Align::Start)
         .margin_start(14)
         .margin_top(14)
