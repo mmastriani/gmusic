@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <object class="GtkWindow" id="prefs_window">
+    <property name="modal">True</property>
+    <property name="title">Preferences</property>
+    <property name="default-width">540</property>
+    <property name="default-height">420</property>
+    
+    <child type="titlebar">
+      <object class="GtkHeaderBar" id="prefs_header">
+        <property name="title-widget">
+          <object class="GtkLabel">
+            <property name="label">Preferences</property>
+            <style>
+              <class name="title"/>
+              <class name="pref-title"/>
+            </style>
+          </object>
+        </property>
+      </object>
+    </child>
+
+    <child>
+      <object class="GtkBox">
+        <property name="orientation">vertical</property>
+        <property name="spacing">16</property>
+        <property name="margin-top">20</property>
+        <property name="margin-bottom">20</property>
+        <property name="margin-start">20</property>
+        <property name="margin-end">20</property>
+        
+        <child>
+          <object class="GtkBox">
+            <property name="orientation">vertical</property>
+            <property name="spacing">4</property>
+            <child>
+              <object class="GtkLabel">
+                <property name="label">Music Directories</property>
+                <property name="halign">start</property>
+                <style>
+                  <class name="title-4"/>
+                </style>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="label">Select the directories where the application will look for music (minimum 1).</property>
+                <property name="halign">start</property>
+                <property name="wrap">True</property>
+                <style>
+                  <class name="dim-label"/>
+                </style>
+              </object>
+            </child>
+          </object>
+        </child>
+
+        <child>
+          <object class="GtkScrolledWindow">
+            <property name="hscrollbar-policy">never</property>
+            <property name="vscrollbar-policy">automatic</property>
+            <property name="min-content-height">180</property>
+            <property name="vexpand">True</property>
+            <child>
+              <object class="GtkListBox" id="prefs_list_box">
+                <property name="selection-mode">none</property>
+                <style>
+                  <class name="boxed-list"/>
+                </style>
+              </object>
+            </child>
+          </object>
+        </child>
+
+        <child>
+          <object class="GtkBox">
+            <property name="orientation">horizontal</property>
+            <property name="spacing">10</property>
+            <child>
+              <object class="GtkButton" id="add_btn">
+                <property name="label">Add Directory</property>
+                <property name="icon-name">list-add-symbolic</property>
+                <style>
+                  <class name="suggested-action"/>
+                </style>
+              </object>
+            </child>
+            <child>
+              <object class="GtkButton" id="reset_btn">
+                <property name="label">Reset</property>
+                <property name="icon-name">edit-clear-all-symbolic</property>
+              </object>
+            </child>
+          </object>
+        </child>
+
+      </object>
+    </child>
+  </object>
+</interface>

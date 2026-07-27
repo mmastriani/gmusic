@@ -2,7 +2,7 @@ use crate::config::AppConfig;
 use crate::ui::sidebar::trigger_sidebar_reload;
 use gtk4 as gtk;
 use gtk::prelude::*;
-use gtk::{Application, Button, Box as GtkBox, HeaderBar, Image, Label, ListBox, ListBoxRow, Orientation};
+use gtk::{Application, Button, Box as GtkBox, Image, Label, ListBox, ListBoxRow, Orientation};
 use std::cell::RefCell;
 use std::path::PathBuf;
 use std::rc::Rc;
@@ -35,81 +35,16 @@ pub fn show_preferences(app: &Application) {
         .active_window()
         .expect("No active window for Preferences");
 
-    let header_bar = HeaderBar::new();
-    let title_label = Label::builder()
-        .label("Preferences")
-        .css_classes(vec!["title", "pref-title"])
-        .build();
-    header_bar.set_title_widget(Some(&title_label));
-
-    let prefs_window = gtk::Window::builder()
-        .transient_for(&window)
-        .modal(true)
-        .title("Preferences")
-        .default_width(540)
-        .default_height(420)
-        .build();
-
-    prefs_window.set_titlebar(Some(&header_bar));
+    let builder = gtk::Builder::from_string(include_str!("../../resources/ui/preferences.ui"));
+    
+    let prefs_window: gtk::Window = builder.object("prefs_window").expect("Could not get prefs_window");
+    prefs_window.set_transient_for(Some(&window));
+    
+    let list_box: ListBox = builder.object("prefs_list_box").expect("Could not get prefs_list_box");
+    let add_btn: Button = builder.object("add_btn").expect("Could not get add_btn");
+    let reset_btn: Button = builder.object("reset_btn").expect("Could not get reset_btn");
 
     let config = Rc::new(RefCell::new(AppConfig::load()));
-
-    let main_box = GtkBox::new(Orientation::Vertical, 16);
-    main_box.set_margin_start(20);
-    main_box.set_margin_end(20);
-    main_box.set_margin_top(20);
-    main_box.set_margin_bottom(20);
-
-    let section_title = Label::builder()
-        .label("Music Directories")
-        .halign(gtk::Align::Start)
-        .css_classes(vec!["title-4"])
-        .build();
-
-    let section_desc = Label::builder()
-        .label("Select the directories where the application will look for music (minimum 1).")
-        .halign(gtk::Align::Start)
-        .css_classes(vec!["dim-label"])
-        .wrap(true)
-        .build();
-
-    let header_box = GtkBox::new(Orientation::Vertical, 4);
-    header_box.append(&section_title);
-    header_box.append(&section_desc);
-
-    let list_box = ListBox::builder()
-        .selection_mode(gtk::SelectionMode::None)
-        .css_classes(vec!["boxed-list"])
-        .build();
-
-    let scrolled_window = gtk::ScrolledWindow::builder()
-        .hscrollbar_policy(gtk::PolicyType::Never)
-        .vscrollbar_policy(gtk::PolicyType::Automatic)
-        .min_content_height(180)
-        .vexpand(true)
-        .child(&list_box)
-        .build();
-
-    let add_btn = Button::builder()
-        .label("Add Directory")
-        .icon_name("list-add-symbolic")
-        .css_classes(vec!["suggested-action"])
-        .build();
-
-    let reset_btn = Button::builder()
-        .label("Reset")
-        .icon_name("edit-clear-all-symbolic")
-        .build();
-
-    let action_box = GtkBox::new(Orientation::Horizontal, 10);
-    action_box.append(&add_btn);
-    action_box.append(&reset_btn);
-
-    main_box.append(&header_box);
-    main_box.append(&scrolled_window);
-    main_box.append(&action_box);
-
-    prefs_window.set_child(Some(&main_box));
 
     let notify_config_changed = move || {
         trigger_sidebar_reload();
@@ -254,125 +189,10 @@ pub fn show_preferences(app: &Application) {
 pub fn show_about(app: &Application) {
     let window = app.active_window().expect("No window found for About");
 
-    let about_win = gtk::Window::builder()
-        .transient_for(&window)
-        .modal(true)
-        .title("")
-        .default_width(360)
-        .resizable(false)
-        .hide_on_close(true)
-        .build();
-
-    let header_bar = gtk::HeaderBar::new();
-    header_bar.set_show_title_buttons(true);
-    about_win.set_titlebar(Some(&header_bar));
-
-    let main_box = gtk::Box::new(gtk::Orientation::Vertical, 0);
-    main_box.set_margin_top(24);
-    main_box.set_margin_bottom(32);
-    main_box.set_margin_start(32);
-    main_box.set_margin_end(32);
-    main_box.set_halign(gtk::Align::Fill);
-
-    let icon = gtk::Image::from_icon_name("gmusic");
-    icon.set_pixel_size(128);
-    icon.set_margin_bottom(24);
-
-    let title_label = gtk::Label::new(Some("gMusic"));
-    title_label.add_css_class("about-title");
-    title_label.set_margin_bottom(8);
-
-    let subtitle_label = gtk::Label::new(Some("The GNOME Project"));
-    subtitle_label.add_css_class("about-subtitle");
-    subtitle_label.set_margin_bottom(12);
-
-    let version_box = gtk::Box::new(gtk::Orientation::Horizontal, 0);
-    version_box.set_halign(gtk::Align::Center);
-    let version_label = gtk::Label::new(Some("0.1.0"));
-    version_label.add_css_class("version-pill");
-    version_box.append(&version_label);
-    version_box.set_margin_bottom(32);
-
-    let links_list = gtk::ListBox::new();
-    links_list.add_css_class("boxed-list");
-    links_list.set_selection_mode(gtk::SelectionMode::None);
+    let builder = gtk::Builder::from_string(include_str!("../../resources/ui/about.ui"));
     
-    let website_row = gtk::ListBoxRow::new();
-    let web_box = gtk::Box::new(gtk::Orientation::Horizontal, 0);
-    web_box.set_margin_top(14);
-    web_box.set_margin_bottom(14);
-    web_box.set_margin_start(14);
-    web_box.set_margin_end(14);
-    let web_lbl = gtk::Label::new(Some("Website"));
-    web_lbl.set_hexpand(true);
-    web_lbl.set_halign(gtk::Align::Start);
-    let web_icon = gtk::Image::from_icon_name("external-link-symbolic");
-    web_box.append(&web_lbl);
-    web_box.append(&web_icon);
-    website_row.set_child(Some(&web_box));
-    links_list.append(&website_row);
+    let about_win: gtk::Window = builder.object("about_window").expect("Could not get about_window");
+    about_win.set_transient_for(Some(&window));
 
-    let issue_row = gtk::ListBoxRow::new();
-    let issue_box = gtk::Box::new(gtk::Orientation::Horizontal, 0);
-    issue_box.set_margin_top(14);
-    issue_box.set_margin_bottom(14);
-    issue_box.set_margin_start(14);
-    issue_box.set_margin_end(14);
-    let issue_lbl = gtk::Label::new(Some("Report an Issue"));
-    issue_lbl.set_hexpand(true);
-    issue_lbl.set_halign(gtk::Align::Start);
-    let issue_icon = gtk::Image::from_icon_name("external-link-symbolic");
-    issue_box.append(&issue_lbl);
-    issue_box.append(&issue_icon);
-    issue_row.set_child(Some(&issue_box));
-    links_list.append(&issue_row);
-
-    let info_list = gtk::ListBox::new();
-    info_list.add_css_class("boxed-list");
-    info_list.set_selection_mode(gtk::SelectionMode::None);
-    info_list.set_margin_top(16);
-
-    let credits_row = gtk::ListBoxRow::new();
-    let cred_box = gtk::Box::new(gtk::Orientation::Horizontal, 0);
-    cred_box.set_margin_top(14);
-    cred_box.set_margin_bottom(14);
-    cred_box.set_margin_start(14);
-    cred_box.set_margin_end(14);
-    let cred_lbl = gtk::Label::new(Some("Credits"));
-    cred_lbl.set_hexpand(true);
-    cred_lbl.set_halign(gtk::Align::Start);
-    let cred_icon = gtk::Image::from_icon_name("go-next-symbolic");
-    cred_box.append(&cred_lbl);
-    cred_box.append(&cred_icon);
-    credits_row.set_child(Some(&cred_box));
-    info_list.append(&credits_row);
-
-    let legal_row = gtk::ListBoxRow::new();
-    let legal_box = gtk::Box::new(gtk::Orientation::Horizontal, 0);
-    legal_box.set_margin_top(14);
-    legal_box.set_margin_bottom(14);
-    legal_box.set_margin_start(14);
-    legal_box.set_margin_end(14);
-    let legal_lbl = gtk::Label::new(Some("Legal"));
-    legal_lbl.set_hexpand(true);
-    legal_lbl.set_halign(gtk::Align::Start);
-    let legal_icon = gtk::Image::from_icon_name("go-next-symbolic");
-    legal_box.append(&legal_lbl);
-    legal_box.append(&legal_icon);
-    legal_row.set_child(Some(&legal_box));
-    info_list.append(&legal_row);
-
-    let center_box = gtk::Box::new(gtk::Orientation::Vertical, 0);
-    center_box.set_halign(gtk::Align::Center);
-    center_box.append(&icon);
-    center_box.append(&title_label);
-    center_box.append(&subtitle_label);
-    center_box.append(&version_box);
-
-    main_box.append(&center_box);
-    main_box.append(&links_list);
-    main_box.append(&info_list);
-
-    about_win.set_child(Some(&main_box));
     about_win.present();
 }

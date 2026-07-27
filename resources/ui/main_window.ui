@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <!-- Main Window -->
+  <object class="GtkApplicationWindow" id="main_window">
+    <property name="title">gmusic</property>
+    <property name="default-width">1050</property>
+    <property name="default-height">720</property>
+    <property name="icon-name">gmusic</property>
+    
+    <child type="titlebar">
+      <object class="GtkHeaderBar" id="header_bar">
+        <style>
+          <class name="main-headerbar"/>
+        </style>
+
+        <child type="start">
+          <object class="GtkBox" id="left_box">
+            <property name="orientation">horizontal</property>
+            <property name="spacing">5</property>
+
+            <child>
+              <object class="GtkButton" id="prev_btn">
+                <property name="icon-name">media-skip-backward-symbolic</property>
+                <property name="valign">center</property>
+                <property name="has-frame">False</property>
+                <style>
+                  <class name="media-btn"/>
+                  <class name="media-btn-skip"/>
+                </style>
+              </object>
+            </child>
+
+            <child>
+              <object class="GtkButton" id="play_btn">
+                <property name="icon-name">media-playback-start-symbolic</property>
+                <property name="valign">center</property>
+                <property name="has-frame">False</property>
+                <style>
+                  <class name="media-btn"/>
+                  <class name="media-btn-play"/>
+                </style>
+              </object>
+            </child>
+
+            <child>
+              <object class="GtkButton" id="next_btn">
+                <property name="icon-name">media-skip-forward-symbolic</property>
+                <property name="valign">center</property>
+                <property name="has-frame">False</property>
+                <style>
+                  <class name="media-btn"/>
+                  <class name="media-btn-skip"/>
+                </style>
+              </object>
+            </child>
+
+            <child>
+              <object class="GtkScale" id="volume_scale">
+                <property name="orientation">horizontal</property>
+                <property name="width-request">150</property>
+                <property name="valign">center</property>
+              </object>
+            </child>
+          </object>
+        </child>
+
+        <property name="title-widget">
+          <object class="GtkBox" id="center_box">
+            <property name="orientation">horizontal</property>
+            <property name="hexpand">True</property>
+            <property name="margin-start">40</property>
+            <property name="margin-end">40</property>
+            
+            <child>
+              <object class="GtkStack" id="stack">
+                <property name="transition-type">crossfade</property>
+                <property name="halign">center</property>
+                
+                <child>
+                  <object class="GtkStackPage">
+                    <property name="name">logo</property>
+                    <property name="child">
+                      <object class="GtkImage" id="center_image">
+                        <property name="icon-name">start-here-symbolic</property>
+                        <property name="pixel-size">24</property>
+                      </object>
+                    </property>
+                  </object>
+                </child>
+
+                <child>
+                  <object class="GtkStackPage">
+                    <property name="name">player</property>
+                    <property name="child">
+                      <object class="GtkBox" id="lcd_box">
+                        <property name="orientation">vertical</property>
+                        <style>
+                          <class name="lcd-display"/>
+                        </style>
+
+                        <child>
+                          <object class="GtkBox" id="labels_box">
+                            <property name="orientation">vertical</property>
+                            <child>
+                              <object class="GtkLabel" id="title_label">
+                                <property name="label"></property>
+                                <property name="ellipsize">end</property>
+                                <property name="max-width-chars">30</property>
+                                <style>
+                                  <class name="lcd-title"/>
+                                </style>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="artist_label">
+                                <property name="label"></property>
+                                <property name="ellipsize">end</property>
+                                <property name="max-width-chars">30</property>
+                                <style>
+                                  <class name="lcd-artist"/>
+                                </style>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+
+                        <child>
+                          <object class="GtkBox" id="bottom_box">
+                            <property name="orientation">horizontal</property>
+                            <property name="spacing">4</property>
+                            
+                            <child>
+                              <object class="GtkLabel" id="time_label">
+                                <property name="label">0:00</property>
+                                <style>
+                                  <class name="lcd-time"/>
+                                </style>
+                              </object>
+                            </child>
+                            
+                            <child>
+                              <object class="GtkScale" id="progress_scale">
+                                <property name="orientation">horizontal</property>
+                                <property name="draw-value">False</property>
+                                <property name="hexpand">True</property>
+                                <style>
+                                  <class name="lcd-scale"/>
+                                </style>
+                              </object>
+                            </child>
+                            
+                            <child>
+                              <object class="GtkLabel" id="duration_label">
+                                <property name="label">0:00</property>
+                                <style>
+                                  <class name="lcd-time"/>
+                                </style>
+                              </object>
+                            </child>
+                            
+                          </object>
+                        </child>
+
+                      </object>
+                    </property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </property>
+
+        <child type="end">
+          <object class="GtkMenuButton" id="menu_button">
+            <property name="icon-name">open-menu-symbolic</property>
+            <property name="valign">center</property>
+            <property name="has-frame">False</property>
+            <property name="menu-model">menu_model</property>
+          </object>
+        </child>
+
+      </object>
+    </child>
+
+    <child>
+      <object class="GtkPaned" id="paned">
+        <property name="orientation">horizontal</property>
+        <property name="position">350</property>
+        <property name="shrink-start-child">False</property>
+        <property name="shrink-end-child">False</property>
+        
+        <child>
+          <object class="GtkBox" id="sidebar">
+            <property name="orientation">vertical</property>
+            <property name="width-request">240</property>
+            <style>
+              <class name="navigation-sidebar"/>
+            </style>
+            
+            <child>
+              <object class="GtkLabel" id="sidebar_header">
+                <property name="label">Library</property>
+                <property name="halign">start</property>
+                <property name="margin-start">14</property>
+                <property name="margin-top">14</property>
+                <property name="margin-bottom">8</property>
+                <style>
+                  <class name="title-4"/>
+                  <class name="dim-label"/>
+                </style>
+              </object>
+            </child>
+            
+            <!-- sidebar_tree_view will be appended here in code -->
+          </object>
+        </child>
+        
+        <!-- main_panel will be added as end-child in code -->
+      </object>
+    </child>
+  </object>
+
+  <!-- Menu Model -->
+  <menu id="menu_model">
+    <item>
+      <attribute name="label">Preferences</attribute>
+      <attribute name="action">app.preferences</attribute>
+    </item>
+    <item>
+      <attribute name="label">About</attribute>
+      <attribute name="action">app.about</attribute>
+    </item>
+  </menu>
+</interface>

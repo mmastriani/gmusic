@@ -156,27 +156,43 @@ pub struct Song {
     pub path: PathBuf,
 }
 
-pub fn build_folder_item(name: &str, path: PathBuf) -> FolderItem {
+pub fn build_folder_item(name: &str, path: PathBuf) -> Option<FolderItem> {
     let mut subdirs = Vec::new();
+    let mut has_music = false;
+    let audio_extensions = ["mp3", "flac", "ogg", "wav", "m4a", "aac", "opus", "wma"];
+
     if let Ok(entries) = fs::read_dir(&path) {
         for entry in entries.flatten() {
             let sub_path = entry.path();
             if sub_path.is_dir() {
                 if let Some(file_name) = sub_path.file_name().and_then(|n| n.to_str()) {
                     if !file_name.starts_with('.') {
-                        subdirs.push((file_name.to_string(), sub_path));
+                        if let Some(child_item) = build_folder_item(file_name, sub_path.clone()) {
+                            subdirs.push((file_name.to_string(), child_item));
+                        }
+                    }
+                }
+            } else if sub_path.is_file() {
+                if !has_music {
+                    if let Some(ext) = sub_path.extension().and_then(|e| e.to_str()) {
+                        if audio_extensions.contains(&ext.to_lowercase().as_str()) {
+                            has_music = true;
+                        }
                     }
                 }
             }
         }
     }
 
+    if !has_music && subdirs.is_empty() {
+        return None;
+    }
+
     subdirs.sort_by(|a, b| a.0.to_lowercase().cmp(&b.0.to_lowercase()));
 
     let children = if !subdirs.is_empty() {
         let children_store = gio::ListStore::new::<FolderItem>();
-        for (sub_name, sub_path) in subdirs {
-            let child_item = build_folder_item(&sub_name, sub_path);
+        for (_, child_item) in subdirs {
             children_store.append(&child_item);
         }
         Some(children_store)
@@ -184,7 +200,7 @@ pub fn build_folder_item(name: &str, path: PathBuf) -> FolderItem {
         None
     };
 
-    FolderItem::new(name, path, children)
+    Some(FolderItem::new(name, path, children))
 }
 
 pub fn build_root_folder_store(config: &AppConfig) -> gio::ListStore {
@@ -199,15 +215,16 @@ pub fn build_root_folder_store(config: &AppConfig) -> gio::ListStore {
                 if sub_path.is_dir() {
                     if let Some(file_name) = sub_path.file_name().and_then(|n| n.to_str()) {
                         if !file_name.starts_with('.') {
-                            subdirs.push((file_name.to_string(), sub_path));
+                            if let Some(child_item) = build_folder_item(file_name, sub_path.clone()) {
+                                subdirs.push((file_name.to_string(), child_item));
+                            }
                         }
                     }
                 }
             }
         }
         subdirs.sort_by(|a, b| a.0.to_lowercase().cmp(&b.0.to_lowercase()));
-        for (sub_name, sub_path) in subdirs {
-            let child_item = build_folder_item(&sub_name, sub_path);
+        for (_, child_item) in subdirs {
             root_store.append(&child_item);
         }
     }
@@ -217,8 +234,9 @@ pub fn build_root_folder_store(config: &AppConfig) -> gio::ListStore {
                 .file_name()
                 .and_then(|n| n.to_str())
                 .unwrap_or_else(|| dir.to_str().unwrap_or("Music"));
-            let folder_item = build_folder_item(folder_name, dir.clone());
-            root_store.append(&folder_item);
+            if let Some(folder_item) = build_folder_item(folder_name, dir.clone()) {
+                root_store.append(&folder_item);
+            }
         }
     }
 

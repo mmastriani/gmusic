@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <object class="GtkWindow" id="about_window">
+    <property name="modal">True</property>
+    <property name="title"></property>
+    <property name="default-width">360</property>
+    <property name="resizable">False</property>
+    <property name="hide-on-close">True</property>
+    
+    <child type="titlebar">
+      <object class="GtkHeaderBar" id="about_header">
+        <property name="show-title-buttons">True</property>
+      </object>
+    </child>
+
+    <child>
+      <object class="GtkBox">
+        <property name="orientation">vertical</property>
+        <property name="margin-top">24</property>
+        <property name="margin-bottom">32</property>
+        <property name="margin-start">32</property>
+        <property name="margin-end">32</property>
+        <property name="halign">fill</property>
+
+        <child>
+          <object class="GtkBox">
+            <property name="orientation">vertical</property>
+            <property name="halign">center</property>
+            
+            <child>
+              <object class="GtkImage">
+                <property name="icon-name">gmusic</property>
+                <property name="pixel-size">128</property>
+                <property name="margin-bottom">24</property>
+              </object>
+            </child>
+
+            <child>
+              <object class="GtkLabel">
+                <property name="label">gMusic</property>
+                <property name="margin-bottom">8</property>
+                <style>
+                  <class name="about-title"/>
+                </style>
+              </object>
+            </child>
+
+            <child>
+              <object class="GtkLabel">
+                <property name="label">The GNOME Project</property>
+                <property name="margin-bottom">12</property>
+                <style>
+                  <class name="about-subtitle"/>
+                </style>
+              </object>
+            </child>
+
+            <child>
+              <object class="GtkBox">
+                <property name="orientation">horizontal</property>
+                <property name="halign">center</property>
+                <property name="margin-bottom">32</property>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="label">0.1.0</property>
+                    <style>
+                      <class name="version-pill"/>
+                    </style>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+
+        <child>
+          <object class="GtkListBox">
+            <property name="selection-mode">none</property>
+            <style>
+              <class name="boxed-list"/>
+            </style>
+            
+            <child>
+              <object class="GtkListBoxRow">
+                <child>
+                  <object class="GtkBox">
+                    <property name="orientation">horizontal</property>
+                    <property name="margin-top">14</property>
+                    <property name="margin-bottom">14</property>
+                    <property name="margin-start">14</property>
+                    <property name="margin-end">14</property>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="label">Website</property>
+                        <property name="hexpand">True</property>
+                        <property name="halign">start</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkImage">
+                        <property name="icon-name">external-link-symbolic</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+
+            <child>
+              <object class="GtkListBoxRow">
+                <child>
+                  <object class="GtkBox">
+                    <property name="orientation">horizontal</property>
+                    <property name="margin-top">14</property>
+                    <property name="margin-bottom">14</property>
+                    <property name="margin-start">14</property>
+                    <property name="margin-end">14</property>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="label">Report an Issue</property>
+                        <property name="hexpand">True</property>
+                        <property name="halign">start</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkImage">
+                        <property name="icon-name">external-link-symbolic</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+
+        <child>
+          <object class="GtkListBox">
+            <property name="selection-mode">none</property>
+            <property name="margin-top">16</property>
+            <style>
+              <class name="boxed-list"/>
+            </style>
+            
+            <child>
+              <object class="GtkListBoxRow">
+                <child>
+                  <object class="GtkBox">
+                    <property name="orientation">horizontal</property>
+                    <property name="margin-top">14</property>
+                    <property name="margin-bottom">14</property>
+                    <property name="margin-start">14</property>
+                    <property name="margin-end">14</property>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="label">Credits</property>
+                        <property name="hexpand">True</property>
+                        <property name="halign">start</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkImage">
+                        <property name="icon-name">go-next-symbolic</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+
+            <child>
+              <object class="GtkListBoxRow">
+                <child>
+                  <object class="GtkBox">
+                    <property name="orientation">horizontal</property>
+                    <property name="margin-top">14</property>
+                    <property name="margin-bottom">14</property>
+                    <property name="margin-start">14</property>
+                    <property name="margin-end">14</property>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="label">Legal</property>
+                        <property name="hexpand">True</property>
+                        <property name="halign">start</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkImage">
+                        <property name="icon-name">go-next-symbolic</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+
+          </object>
+        </child>
+
+      </object>
+    </child>
+  </object>
+</interface>

@@ -35,7 +35,7 @@ pub fn create_sidebar_tree_view(
         box_widget.set_margin_top(4);
         box_widget.set_margin_bottom(4);
 
-        let icon = Image::from_icon_name("folder-music-symbolic");
+        let icon = Image::from_icon_name("folder-symbolic");
         let label = Label::builder()
             .halign(gtk::Align::Start)
             .hexpand(true)
